@@ -8,10 +8,6 @@
         mc:Ignorable="d" Title="Spotify Overlay" Height="0" Width="0" Background="black" 
         WindowState="Normal" ResizeMode="NoResize"
         ShowInTaskbar="False" WindowStyle="None">
-    <Window.CommandBindings>
-        <CommandBinding Command="{x:Static local:Overlay.ExitCommand}"
-                        Executed="ExitCommandExecuted"/>
-    </Window.CommandBindings>
     <Grid>
         <wpf:WebView2 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Grid.Column="0" Grid.Row="0" 
                       Source = "https://open.spotify.com/" x:Name="SpotifyWebview" DefaultBackgroundColor="white"

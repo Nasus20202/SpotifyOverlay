@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Windows;
 
 namespace SpotifyOverlay;
 class KeyboardHandler
@@ -10,21 +9,22 @@ class KeyboardHandler
     private const int WH_KEYBOARD_LL = 13;
     private const int WM_KEYDOWN = 0x0100;
     private const int WM_SYSKEYDOWN = 0x0104;
-    private static LowLevelKeyboardProc _proc = HookCallback;
-    private static IntPtr _hookID = IntPtr.Zero;
+    private DateTime _baseTime = DateTime.UtcNow.AddMilliseconds(-2*MaxTimeDelta);
+    private const int MaxTimeDelta = 100;
+    private IntPtr _hookId = IntPtr.Zero;
 
-    private List<KeyboardShortcut> _keyboardShortcuts = new List<KeyboardShortcut>();
-    private List<int> _lastPressed = new List<int>(0xff);
+    private readonly List<KeyboardShortcut> _keyboardShortcuts = new List<KeyboardShortcut>();
+    private int[] _lastPressed = new int[0xff];
 
-    static KeyboardHandler()
+    public KeyboardHandler()
     {
-        _hookID = SetHook(_proc);
+        _hookId = SetHook(HookCallback);
         AppDomain.CurrentDomain.ProcessExit += KeyboardHandlerDestructor;
     }
 
-    static void KeyboardHandlerDestructor(object sender, EventArgs e)
+    private void KeyboardHandlerDestructor(object sender, EventArgs e)
     {
-        UnhookWindowsHookEx(_hookID);
+        UnhookWindowsHookEx(_hookId);
     }
 
     public void AddShortcut(KeyboardShortcut shortcut)
@@ -32,31 +32,45 @@ class KeyboardHandler
         _keyboardShortcuts.Add(shortcut);
     }
 
-    private static void OnKeyPress(char key)
+    private void OnKeyPress(char pressedKey)
     {
-        MessageBox.Show(((int) key).ToString());
+        var timeSpan = (int) (DateTime.UtcNow - _baseTime).TotalMilliseconds;
+        _lastPressed[pressedKey] = timeSpan;
+        foreach (var shortcut in _keyboardShortcuts)
+        {
+            bool actionDetected = true;
+            foreach (var key in shortcut.Keys)
+            {
+                if (timeSpan - _lastPressed[key] > MaxTimeDelta)
+                {
+                    actionDetected = false;
+                    break;
+                }
+            }
+            if (actionDetected)
+                shortcut.Action!();
+        }
     }
 
-    private static IntPtr SetHook(LowLevelKeyboardProc proc)
+    private IntPtr SetHook(LowLevelKeyboardProc proc)
     {
         using (Process curProcess = Process.GetCurrentProcess())
         using (ProcessModule curModule = curProcess.MainModule)
         {
-            return SetWindowsHookEx(WH_KEYBOARD_LL, proc,
-                GetModuleHandle(curModule.ModuleName), 0);
+            return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
         }
     }
 
     private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
 
-    private static IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+    private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
     {
         if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr) WM_SYSKEYDOWN)
         {
             var vkCode = Marshal.ReadInt32(lParam);
             OnKeyPress((char) vkCode);
         }
-        return CallNextHookEx(_hookID, nCode, wParam, lParam);
+        return CallNextHookEx(_hookId, nCode, wParam, lParam);
     }
 
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
