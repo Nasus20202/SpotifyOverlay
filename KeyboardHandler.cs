@@ -10,7 +10,7 @@ class KeyboardHandler
     private const int WM_KEYDOWN = 0x0100;
     private const int WM_SYSKEYDOWN = 0x0104;
     private DateTime _baseTime = DateTime.UtcNow.AddMilliseconds(-2*MaxTimeDelta);
-    private const int MaxTimeDelta = 100;
+    private const int MaxTimeDelta = 250;
     private IntPtr _hookId = IntPtr.Zero;
 
     private readonly List<KeyboardShortcut> _keyboardShortcuts = new List<KeyboardShortcut>();
