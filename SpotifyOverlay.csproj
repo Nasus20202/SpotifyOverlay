@@ -5,10 +5,16 @@
         <TargetFramework>net7.0-windows</TargetFramework>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <AssemblyName>Spotify Overlay</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1619-prerelease" />
     </ItemGroup>
+
+    <PropertyGroup>
+      <ApplicationIcon>SpotifyOverlay.ico</ApplicationIcon>
+    </PropertyGroup>
+
 
 </Project>

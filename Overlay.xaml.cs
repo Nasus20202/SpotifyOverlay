@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Web.WebView2.Core;
 
 namespace SpotifyOverlay
 {
@@ -40,7 +41,7 @@ namespace SpotifyOverlay
         {
             base.OnSourceInitialized(e);
             
-            IntPtr handle = new WindowInteropHelper(this).Handle;
+            var handle = new WindowInteropHelper(this).Handle;
             _source = HwndSource.FromHwnd(handle)!;
             _source.AddHook(HwndHook);
 
@@ -50,7 +51,7 @@ namespace SpotifyOverlay
         private IntPtr HwndHook(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
             const int wmHotkey = 0x0312; 
-            int vkey = (((int)lParam >> 16) & 0xFFFF);
+            var vkey = (((int)lParam >> 16) & 0xFFFF);
             switch (msg)
             {
                 case wmHotkey:
@@ -69,11 +70,26 @@ namespace SpotifyOverlay
             return IntPtr.Zero;
         }
 
+        public static readonly RoutedCommand ExitCommand = new RoutedCommand();
         private bool _visible = false;
         
         public Overlay()
         {
+            ExitCommand.InputGestures.Add(new KeyGesture(Key.Escape));
             InitializeComponent();
+        }
+
+        private void ExitCommandExecuted(object sender, ExecutedRoutedEventArgs e)
+        {
+            SwitchVisibility();
+        }
+
+        private void WebviewInitialized(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            var settings = SpotifyWebview.CoreWebView2.Settings;
+            settings.IsStatusBarEnabled = false;
+            settings.AreDevToolsEnabled = false;
+            settings.AreDefaultContextMenusEnabled = false;
         }
         
         private void SwitchVisibility()
