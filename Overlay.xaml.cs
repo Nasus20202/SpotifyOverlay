@@ -11,9 +11,9 @@ namespace SpotifyOverlay
         public Overlay()
         {
             var keyboardHandler = new KeyboardHandler();
-            const char altVkCode = (char)0xA4, sVkCode = (char)0x53, escVkCode = (char)0x1B;
+            const char altVkCode = (char)0xA4, ctrlVkCode = (char) 0xA2, sVkCode = (char)0x53, escVkCode = (char)0x1B;
             
-            var keyboardShortcutMain = new KeyboardShortcut(new List<char>{altVkCode, sVkCode}, SwitchVisibility);
+            var keyboardShortcutMain = new KeyboardShortcut(new List<char>{altVkCode, ctrlVkCode, sVkCode}, SwitchVisibility);
             var escShortcut = new KeyboardShortcut(new List<char>{escVkCode}, EscPressed);
             
             keyboardHandler.AddShortcut(keyboardShortcutMain);
