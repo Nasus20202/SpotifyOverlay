@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SpotifyOverlay"
         xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d" Title="Spotify Overlay" Height="0" Width="0" Background="black" 
-        WindowState="Normal" ResizeMode="NoResize" 
+        WindowState="Normal" ResizeMode="NoResize"
         ShowInTaskbar="False" WindowStyle="None">
     <Window.CommandBindings>
         <CommandBinding Command="{x:Static local:Overlay.ExitCommand}"
