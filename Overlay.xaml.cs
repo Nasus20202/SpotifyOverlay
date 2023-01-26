@@ -90,6 +90,7 @@ namespace SpotifyOverlay
             settings.IsStatusBarEnabled = false;
             settings.AreDevToolsEnabled = false;
             settings.AreDefaultContextMenusEnabled = false;
+
         }
         
         private void SwitchVisibility()
