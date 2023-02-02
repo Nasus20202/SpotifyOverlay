@@ -7,7 +7,7 @@
         xmlns:wpf="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d" Title="Spotify Overlay" Height="0" Width="0" Background="black" 
         WindowState="Normal" ResizeMode="NoResize"
-        ShowInTaskbar="False" WindowStyle="None">
+        ShowInTaskbar="False" WindowStyle="None" Visibility="Hidden">
     <Grid>
         <wpf:WebView2 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Grid.Column="0" Grid.Row="0" 
                       Source = "https://open.spotify.com/" x:Name="SpotifyWebview" DefaultBackgroundColor="white"
