@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SpotifyOverlay;
+namespace Keyboard;
 
 public delegate void ActionDelegate();
 

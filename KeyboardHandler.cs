@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-namespace SpotifyOverlay;
+namespace Keyboard;
 class KeyboardHandler
 {
     private const int WH_KEYBOARD_LL = 13;

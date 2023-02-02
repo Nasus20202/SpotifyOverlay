@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows;
 using Microsoft.Web.WebView2.Core;
+using Keyboard;
 
 namespace SpotifyOverlay
 {
@@ -18,10 +19,10 @@ namespace SpotifyOverlay
             
             keyboardHandler.AddShortcut(keyboardShortcutMain);
             keyboardHandler.AddShortcut(escShortcut);
-            
+
             InitializeComponent();
         }
-
+        
         private void EscPressed()
         {
             if (_visible)
@@ -34,6 +35,7 @@ namespace SpotifyOverlay
             settings.IsStatusBarEnabled = false;
             settings.AreDevToolsEnabled = false;
             settings.AreDefaultContextMenusEnabled = false;
+            this.Visibility = Visibility.Hidden;
         }
         
         public void SwitchVisibility()
