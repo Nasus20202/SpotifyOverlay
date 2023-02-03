@@ -41,9 +41,9 @@ namespace SpotifyOverlay
         public void SwitchVisibility()
         {
             _visible = !_visible;
+            this.Visibility = _visible ? Visibility.Visible : Visibility.Hidden;
             this.WindowState = _visible ? WindowState.Maximized : WindowState.Normal;
             this.Topmost = _visible;
-            this.Visibility = _visible ? Visibility.Visible : Visibility.Hidden;
             this.Activate();
         }
     }
