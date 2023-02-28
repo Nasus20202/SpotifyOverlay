@@ -14,7 +14,8 @@ class KeyboardHandler
     private IntPtr _hookId = IntPtr.Zero;
 
     private readonly List<KeyboardShortcut> _keyboardShortcuts = new List<KeyboardShortcut>();
-    private int[] _lastPressed = new int[0xff];
+    private const int _keyCount = 0xff;
+    private int[] _lastPressed = new int[_keyCount];
 
     public KeyboardHandler()
     {
@@ -34,6 +35,8 @@ class KeyboardHandler
 
     private void OnKeyPress(char pressedKey)
     {
+        if (pressedKey >= _keyCount || pressedKey < 0)
+            return;
         var timeSpan = (int) (DateTime.UtcNow - _baseTime).TotalMilliseconds;
         _lastPressed[pressedKey] = timeSpan;
         foreach (var shortcut in _keyboardShortcuts)
