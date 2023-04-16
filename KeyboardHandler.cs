@@ -12,6 +12,7 @@ class KeyboardHandler
     private DateTime _baseTime = DateTime.UtcNow.AddMilliseconds(-2*MaxTimeDelta);
     private const int MaxTimeDelta = 250;
     private IntPtr _hookId = IntPtr.Zero;
+    private LowLevelKeyboardProc? _hookProc;
 
     private readonly List<KeyboardShortcut> _keyboardShortcuts = new List<KeyboardShortcut>();
     private const int _keyCount = 0xff;
@@ -60,7 +61,8 @@ class KeyboardHandler
         using (Process curProcess = Process.GetCurrentProcess())
         using (ProcessModule curModule = curProcess.MainModule)
         {
-            return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+            _hookProc = proc; // save proc to handler object so that the garbage collector doesn't delete it
+            return SetWindowsHookEx(WH_KEYBOARD_LL, _hookProc, GetModuleHandle(curModule.ModuleName), 0);
         }
     }
 
