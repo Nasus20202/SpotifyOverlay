@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace Keyboard;
-class KeyboardHandler
+class KeyboardHandler : IDisposable
 {
     private const int WH_KEYBOARD_LL = 13;
     private const int WM_KEYDOWN = 0x0100;
@@ -13,6 +13,7 @@ class KeyboardHandler
     private const int MaxTimeDelta = 250;
     private IntPtr _hookId = IntPtr.Zero;
     private LowLevelKeyboardProc? _hookProc;
+    private bool _disposed = false;
 
     private readonly List<KeyboardShortcut> _keyboardShortcuts = new List<KeyboardShortcut>();
     private const int _keyCount = 0xff;
@@ -21,12 +22,21 @@ class KeyboardHandler
     public KeyboardHandler()
     {
         _hookId = SetHook(HookCallback);
-        AppDomain.CurrentDomain.ProcessExit += KeyboardHandlerDestructor;
     }
 
-    private void KeyboardHandlerDestructor(object sender, EventArgs e)
+    public void Dispose()
     {
-        UnhookWindowsHookEx(_hookId);
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (_disposed ) return;
+        if(disposing) {
+            UnhookWindowsHookEx(_hookId);
+        }
+        _disposed = true;
     }
 
     public void AddShortcut(KeyboardShortcut shortcut)
